@@ -35,7 +35,7 @@ jobs:
 
     - name: Test
       run: |
-        cd build/tests && ctest --output-on-failure && ${{github.workspace}}/build/tests/test
+        cd build/test && ctest --output-on-failure && ${{github.workspace}}/build/test/test
 
     - name: Create DEB package
       working-directory: ${{github.workspace}}/build
