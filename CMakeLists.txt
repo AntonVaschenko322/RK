@@ -3,6 +3,6 @@ project(RK)
 
 add_subdirectory(class_lib)
 add_subdirectory(test)
-add_subdirectory(third-party)
+add_subdirectory(third-party/gtest)
 add_executable(main main.cpp)
 target_link_libraries(main Drink)
