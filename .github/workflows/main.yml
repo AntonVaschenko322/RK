@@ -1,4 +1,4 @@
-name: Build, test and archive
+name: RK
 
 on:
   push:
@@ -65,5 +65,5 @@ jobs:
           name: Release v1.${{ github.run_number }}
           files: |
             artifacts/linux/*.deb 
-            header.h
+            ./class_lib/header.h
             main.cpp
