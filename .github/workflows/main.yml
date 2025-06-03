@@ -45,6 +45,58 @@ jobs:
     - name: Run tests
       run: |
         cd build/test && ctest --output-on-failure && ${{github.workspace}}/build/test/test
+
+  job1:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            cpack_flag: WIX
+            extension: msi
+          - os: ubuntu-latest
+            cpack_flag: DEB
+            extension: deb
+          - os: ubuntu-latest
+            cpack_flag: RPM
+            extension: rpm
+          - os: ubuntu-latest
+            cpack_flag: TGZ
+            extension: tar.gz
+          - os: ubuntu-latest
+            cpack_flag: ZIP
+            extension: zip 
+          - os: macos-latest
+            cpack_flag: DragNDrop
+            extension: dmg
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt-get -qq update
+        sudo apt-get install -y cmake
+        sudo apt-get install rpm
+
+    - name: Configure CMake
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+
+    - name: Build
+      run: cmake --build build --config Release
+
+    - name: Create deb package
+      working-directory: ${{github.workspace}}/build
+      run: cpack -G ${{ matrix.cpack_flag }}
+     
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+          name: ${{ matrix.os }}-${{ matrix.extension }}-pack
+          path: build/*.${{ matrix.extension }}
     
   create_release:
       needs: build
