@@ -46,42 +46,36 @@ jobs:
         cd build/test && ctest --output-on-failure && ${{github.workspace}}/build/test/test
 
   job:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: ubuntu-latest
-            cpack_flag: DEB
-            extension: deb
+    runs-on: ubuntu-latest
     steps:
-    - name: Checkout
+    - name: Checkout repository
       uses: actions/checkout@v4
       with:
         submodules: recursive
         
     - name: Install dependencies
-      if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt-get -qq update
-        sudo apt-get install -y cmake
-        sudo apt-get install rpm
-
+        sudo apt-get install -y \
+          cmake \
+          build-essential \
+          dpkg-dev
+        
     - name: Configure CMake
       run: cmake -B build -DCMAKE_BUILD_TYPE=Release
 
     - name: Build
-      run: cmake --build build --config Release
+      run: cmake --build build --config Release --parallel $(nproc)
 
-    - name: Create deb package
+    - name: Create DEB package
       working-directory: ${{github.workspace}}/build
-      run: cpack -G ${{ matrix.cpack_flag }}
+      run: cpack -G DEB
      
-    - name: Upload artifact
+    - name: Upload DEB artifact
       uses: actions/upload-artifact@v4
       with:
-          name: ${{ matrix.os }}-${{ matrix.extension }}-pack
-          path: build/*.${{ matrix.extension }}
+        name: ubuntu-deb-package
+        path: build/*.deb
     
   create_release:
       needs: job
