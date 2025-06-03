@@ -1,3 +1,0 @@
-/home/antonvaschenko/RK/test/CMakeFiles/test.dir
-/home/antonvaschenko/RK/test/CMakeFiles/edit_cache.dir
-/home/antonvaschenko/RK/test/CMakeFiles/rebuild_cache.dir
