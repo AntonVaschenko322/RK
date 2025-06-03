@@ -65,6 +65,4 @@ jobs:
           name: Release v1.${{ github.run_number }}
           files: |
             artifacts/linux/*.deb 
-            ./class_lib/header.h
-            main.cpp
-            .test/test.cpp
+      
