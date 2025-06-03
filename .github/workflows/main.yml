@@ -19,12 +19,6 @@ jobs:
       run: |
         sudo apt-get -qq update
         sudo apt-get install -y cmake lcov 
-    
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-       submodules: recursive
-    - uses: actions/checkout@v4
 
     - name: Configure CMake
 
@@ -53,28 +47,15 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: windows-latest
-            cpack_flag: WIX
-            extension: msi
           - os: ubuntu-latest
             cpack_flag: DEB
             extension: deb
-          - os: ubuntu-latest
-            cpack_flag: RPM
-            extension: rpm
-          - os: ubuntu-latest
-            cpack_flag: TGZ
-            extension: tar.gz
-          - os: ubuntu-latest
-            cpack_flag: ZIP
-            extension: zip 
-          - os: macos-latest
-            cpack_flag: DragNDrop
-            extension: dmg
-
     steps:
-    - uses: actions/checkout@v4
-
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+        
     - name: Install dependencies
       if: matrix.os == 'ubuntu-latest'
       run: |
@@ -106,7 +87,7 @@ jobs:
 
       steps:
       - uses: actions/checkout@v4
-      
+
       - name: download_ubuntu_deb
         uses: actions/download-artifact@v4
         with:
@@ -120,8 +101,4 @@ jobs:
           name: Release v1.${{ github.run_number }}
           files: |
             artifacts/linux/*.deb
-            artifacts/linux/*.rpm
-            artifacts/windows/*.msi
-            artifacts/macos/*.dmg
-            artifacts/linux/*.zip
             artifacts/linux/*.tar.gz  
