@@ -33,6 +33,10 @@ jobs:
     - name: Build
       run: cmake --build build --config Release --parallel $(nproc)
 
+    - name: Test
+      run: |
+        cd build/tests && ctest --output-on-failure && ${{github.workspace}}/build/tests/test
+
     - name: Create DEB package
       working-directory: ${{github.workspace}}/build
       run: cpack -G DEB
