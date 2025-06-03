@@ -46,3 +46,30 @@ jobs:
     - name: Run tests
       run: |
         cd build/test && ctest --output-on-failure && ${{github.workspace}}/build/test/test
+    
+  create_release:
+      runs-on: ubuntu-latest
+      permissions:
+        contents: write 
+
+      steps:
+      - uses: actions/checkout@v4
+      
+      - name: download_ubuntu_deb
+        uses: actions/download-artifact@v4
+        with:
+          name: ubuntu-latest-deb-pack
+          path: artifacts/linux
+          
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.${{ github.run_number }}
+          name: Release v1.${{ github.run_number }}
+          files: |
+            artifacts/linux/*.deb
+            artifacts/linux/*.rpm
+            artifacts/windows/*.msi
+            artifacts/macos/*.dmg
+            artifacts/linux/*.zip
+            artifacts/linux/*.tar.gz  
